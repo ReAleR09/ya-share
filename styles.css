@@ -1,0 +1,10 @@
+.ya-share__button span.d-icon_share {
+	-webkit-mask-image: url(/i/9o5NpDBFgmvkWYsJJbYVnhjjz7Y.svg) !important;
+	mask-image: url(/i/9o5NpDBFgmvkWYsJJbYVnhjjz7Y.svg) !important;
+	background-image: none !important;
+	background-color: #00ff71 !important;
+}
+
+.player-controls__track-controls {
+	margin-right: 5px !important;
+}

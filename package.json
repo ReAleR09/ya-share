@@ -1,0 +1,11 @@
+{
+  "name": "ya-shara",
+  "version": "1.0.0",
+  "description": "Simple Chrome extension to obtain more elegant way to share links from Yandex.Music service",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "realer09",
+  "license": "ISC"
+}
