@@ -3,11 +3,17 @@
 	"name": "ya-share",
 	"version": "1.0.0",
 	"description": "Simple Chrome extension to obtain more elegant way to share links from Yandex.Music service",
+	"permissions": [],
 	"content_scripts": [
 		{
 			"matches": ["https://music.yandex.ru/*"],
-			"js": ["index.js"],
+			"js": ["content-script.js"],
 			"css": ["styles.css"]
+		}
+	],
+	"web_accessible_resources": [
+		{
+			"resources": ["page-script.js"], "matches": ["https://music.yandex.ru/*"]
 		}
 	],
 	"action": {
@@ -18,11 +24,5 @@
 	},
 	"icons": {
 		"128": "128.png"
-	},
-	"permissions": ["clipboardWrite"],
-	"web_accessible_resources": [
-		{
-			"resources": ["page-script.js"], "matches": ["https://music.yandex.ru/*"]
-		}
-	]
+	}
 }

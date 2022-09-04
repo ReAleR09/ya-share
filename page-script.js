@@ -1,28 +1,6 @@
-const buttonClass = 'ya-share__button';
-const controlsPanelClass = 'player-controls__track-controls';
-const originalShareButtonClass = 'd-share-popup.d-share-popup_btn';
+const checkInterval = 100;
 
-const checkInterval = 500;
-
-const canvas = document.getElementById('canvas');
-
-async function convertBlobToPngBlob(imgPath) {
-	return new Promise((resolve) => {
-		const c = document.createElement('canvas')
-		const ctx = c.getContext('2d')
-		const img = new Image();
-		img.crossOrigin = 'anonymous';
-		img.onload = function(){
-			c.width = this.naturalWidth
-			c.height = this.naturalHeight
-			ctx.drawImage(this,0,0)
-			c.toBlob(blob=>{
-				resolve(blob)
-			},'image/png')
-		};
-		img.src = imgPath;
-	});
-}
+const controlBtnPlaylistClass = 'player-controls__btn_seq';
 
 async function copyTrackInfoToClipboard() {
 	const info = externalAPI.getCurrentTrack();
@@ -30,16 +8,17 @@ async function copyTrackInfoToClipboard() {
 	const trackName = info.title;
 	const link = 'https://music.yandex.ru' + info.link;
 	
-	const result = `${artists} - ${trackName} (${link})`;
-	const type = 'text/plain';
-	const textBlob = new Blob([result], { type });
-	
-	const albumCover = 'https://' + info.album.cover.replace('%%', '200x200');
-	const imageBlob = await convertBlobToPngBlob(albumCover);
+	const trackFullTitle = `${artists} - ${trackName}`;
+
+	const plainText = `${trackFullTitle} [${link}]`;
+	const textBlob = new Blob([plainText], { type: 'text/plain' });
+
+	const html = `<a href="${link}">${trackFullTitle}</a>`;
+	const htmlBlob = new Blob([html], { type: 'text/html' });
 
 	const clipItem = new ClipboardItem({
-		[type]: textBlob,
-		[imageBlob.type]: imageBlob
+		[textBlob.type]: textBlob,
+		[htmlBlob.type]: htmlBlob
 	});
 	
 	navigator.clipboard.write([clipItem]).then(
@@ -49,20 +28,18 @@ async function copyTrackInfoToClipboard() {
 }
 
 function addNewButton() {
-	const controls = document.querySelector(`.${controlsPanelClass}`);
-	const originalShareButton = controls.querySelector(`.${originalShareButtonClass}`);
-	const newButton = originalShareButton.cloneNode(true);
-	newButton.classList.add(buttonClass);
-	newButton.removeAttribute('data-b');
+	const newButton = document.createElement('div');
+	newButton.classList.add('player-controls__btn', 'deco-player-controls__button', 'd-icon', 'd-icon_share');
 	newButton.addEventListener('click', copyTrackInfoToClipboard);
 
-	originalShareButton.parentNode.insertBefore(newButton, originalShareButton.nextSibling);
+	const playlistBtnEl = document.querySelector(`.${controlBtnPlaylistClass}`);
+	playlistBtnEl.parentNode.insertBefore(newButton, playlistBtnEl.nextSibling);
 }
 
 const readyPromise = new Promise((resolve) => {
 	// what a decent way to check whether player has been render :D
 	const intId = setInterval(() => {
-		const controls = document.querySelector(`.${controlsPanelClass}`);
+		const controls = document.querySelector(`.${controlBtnPlaylistClass}`);
 		if (controls) {
 			clearInterval(intId);
 			resolve(true);
@@ -71,6 +48,5 @@ const readyPromise = new Promise((resolve) => {
 })
 
 readyPromise.then(() => {
-	console.log('kek');
 	addNewButton();
 });
